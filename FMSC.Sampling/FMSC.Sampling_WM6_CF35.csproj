@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C3999FBA-75FC-409B-90DC-F2E77FB870FD}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -43,17 +43,6 @@
     <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release PC|AnyCPU' ">
-    <NoStdLib>true</NoStdLib>
-    <NoConfig>true</NoConfig>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <OutputPath>bin\Release PC\</OutputPath>
-    <DefineConstants>TRACE;PocketPC</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
