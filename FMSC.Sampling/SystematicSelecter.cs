@@ -93,7 +93,7 @@ namespace FMSC.Sampling
             set
             {
                 if (value < 0 || value > Frequency - 1) { throw new ArgumentOutOfRangeException("HitIndex"); }
-                _hitIndex = value;
+                _iHitIndex = value;
             }
         }
 
