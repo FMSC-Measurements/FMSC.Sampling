@@ -5,13 +5,13 @@ using System.Xml.Serialization;
 
 namespace FMSC.Sampling
 {
-    //note: systematic counter is not zero baised by default. 
+    //note: systematic counter is not zero baised by default.
     //using provided paramiters it creates a range between 1 and RangeMax (or an optional RangeMin and RangeMax), inclusive
     //, so the number of elements is equal to RangeMax - (RangeMin - 1)
-    [Serializable]
     public class SystematicCounter
     {
         public enum CounterType { ON_FIRST, ON_LAST, ON_RANDOM }
+
         public const uint DEFAULT_SEED = 4357;
 
         [XmlAttribute]
@@ -54,7 +54,6 @@ namespace FMSC.Sampling
 
         protected SystematicCounter()
         {
-
         }
 
         //public SystematicCounter(int rangeMax, CounterType counterMethod)
@@ -63,13 +62,11 @@ namespace FMSC.Sampling
         //    //calls overloaded constructer
         //}
 
-
         public SystematicCounter(int rangeMax, CounterType counterMethod, MersenneTwister rand )
             : this(1, rangeMax, counterMethod, rand)
         {
             //calls overloaded constructer
         }
-
 
         //public SystematicCounter(int rangeMin, int rangeMax, CounterType counterMethod)
         //{
@@ -84,7 +81,6 @@ namespace FMSC.Sampling
         //    this.setTrueValue(counterMethod);
         //}
 
-
         public SystematicCounter(int rangeMin, int rangeMax, CounterType counterMethod, MersenneTwister rand)
         {
             this.counterMethod = counterMethod;
@@ -98,13 +94,11 @@ namespace FMSC.Sampling
             this.setTrueValue(counterMethod);
         }
 
-
         public void reset()
         {
             this.Counter = -1;
             this.setTrueValue(this.counterMethod);
         }
-
 
         public bool Next()
         {
@@ -129,7 +123,6 @@ namespace FMSC.Sampling
                 return false;
             }
         }
-
 
         private void setTrueValue(CounterType counterMethod)
         {

@@ -13,7 +13,6 @@ using System.Xml.Serialization;
 
 namespace FMSC.Sampling
 {
-    [Serializable]
 	public class MersenneTwister : System.Random
 	{
 		/* Period parameters */
@@ -27,10 +26,25 @@ namespace FMSC.Sampling
 		private const uint TEMPERING_MASK_B = 0x9d2c5680;
 		private const uint TEMPERING_MASK_C = 0xefc60000;
 
-		private static uint TEMPERING_SHIFT_U(uint y) { return (y >> 11); }
-		private static uint TEMPERING_SHIFT_S(uint y) { return (y <<  7); }
-		private static uint TEMPERING_SHIFT_T(uint y) { return (y << 15); }
-		private static uint TEMPERING_SHIFT_L(uint y) { return (y >> 18); }
+		private static uint TEMPERING_SHIFT_U(uint y) 
+{
+ return (y >> 11);
+}
+
+		private static uint TEMPERING_SHIFT_S(uint y) 
+{
+ return (y <<  7);
+}
+
+		private static uint TEMPERING_SHIFT_T(uint y) 
+{
+ return (y << 15);
+}
+
+		private static uint TEMPERING_SHIFT_L(uint y) 
+{
+ return (y >> 18);
+}
 
 		private uint[] mt = new uint[N]; /* the array for the state vector  */
 
@@ -38,13 +52,12 @@ namespace FMSC.Sampling
 
 		private static uint[] mag01 = { 0x0, MATRIX_A };
 
-
         //Properties
         [XmlArray]
-        public uint[] MT 
+        public uint[] MT
         {
             get { return mt; }
-            set { 
+            set {
                 if( value.Length == N)
                 {
                     mt = value;
@@ -77,6 +90,7 @@ namespace FMSC.Sampling
         }
 
 		/* initializing the array with a NONZERO seed */
+
 		public MersenneTwister(uint seed)
 		{
 			/* setting initial seeds to mt[N] using         */
@@ -89,6 +103,7 @@ namespace FMSC.Sampling
 				mt[mti] = (69069 * mt[mti - 1]) & 0xffffffffU;
 			}
 		}
+
 		public MersenneTwister() : this(4357) /* a default initial seed is used   */
 		{
 		}
