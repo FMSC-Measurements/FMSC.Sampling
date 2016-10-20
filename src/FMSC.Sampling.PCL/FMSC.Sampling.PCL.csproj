@@ -5,7 +5,7 @@
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4097B6D6-D317-4169-9219-43E1AC4DC1F7}</ProjectGuid>
+    <ProjectGuid>{B2CB186C-9319-43D0-A694-FB566E083C58}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FMSC.Sampling.PCL</RootNamespace>
@@ -39,19 +39,9 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlockSelecter.cs" />
-    <Compile Include="BlockState.cs" />
-    <Compile Include="IFrequencyBasedSelecter.cs" />
-    <Compile Include="ListSelecter.cs" />
-    <Compile Include="MersenneTwister.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleItem.cs" />
-    <Compile Include="SampleSelecter.cs" />
-    <Compile Include="SRSSelecter.cs" />
-    <Compile Include="SystematicCounter.cs" />
-    <Compile Include="SystematicSelecter.cs" />
-    <Compile Include="ThreePSelecter.cs" />
+    <Folder Include="Properties\" />
   </ItemGroup>
+  <Import Project="..\FMSC.Sampling\FMSC.Sampling.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
