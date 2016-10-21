@@ -1,43 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMSC.Sampling_CF35", "FMSC.Sampling\FMSC.Sampling_CF35.csproj", "{BFA96A67-F6E0-4387-A23F-F00E4266A59F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMSC.Sampling_CF20", "src\FMSC.Sampling\FMSC.Sampling_CF20.csproj", "{932C2341-A331-4B7C-8BC9-9D3491F1821B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMSC.Sampling_FF35", "FMSC.Sampling\FMSC.Sampling_FF35.csproj", "{4097B6D6-D317-4169-9219-43E1AC4DC1F7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMSC.Sampling_CF20", "FMSC.Sampling\FMSC.Sampling_CF20.csproj", "{932C2341-A331-4B7C-8BC9-9D3491F1821B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampling.Test", "Sampling.Test\Sampling.Test.csproj", "{D7225D79-6092-4819-B435-A415A02DF6FE}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{412C064D-654C-4F03-B645-FA55927247E2}"
-	ProjectSection(SolutionItems) = preProject
-		FMSC.Sampling.vsmdi = FMSC.Sampling.vsmdi
-		FMSC.Sampling1.vsmdi = FMSC.Sampling1.vsmdi
-		FMSC.Sampling2.vsmdi = FMSC.Sampling2.vsmdi
-		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sampling.Test", "src\Sampling.Test\Sampling.Test.csproj", "{D7225D79-6092-4819-B435-A415A02DF6FE}"
 EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
 		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = FMSC.Sampling2.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BFA96A67-F6E0-4387-A23F-F00E4266A59F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BFA96A67-F6E0-4387-A23F-F00E4266A59F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BFA96A67-F6E0-4387-A23F-F00E4266A59F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BFA96A67-F6E0-4387-A23F-F00E4266A59F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4097B6D6-D317-4169-9219-43E1AC4DC1F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4097B6D6-D317-4169-9219-43E1AC4DC1F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4097B6D6-D317-4169-9219-43E1AC4DC1F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4097B6D6-D317-4169-9219-43E1AC4DC1F7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{932C2341-A331-4B7C-8BC9-9D3491F1821B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{932C2341-A331-4B7C-8BC9-9D3491F1821B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{932C2341-A331-4B7C-8BC9-9D3491F1821B}.Release|Any CPU.ActiveCfg = Release|Any CPU
