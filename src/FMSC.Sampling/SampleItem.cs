@@ -5,12 +5,7 @@ using System.Xml.Serialization;
 
 namespace FMSC.Sampling
 {
-
-    //[System.Xml.Serialization.XmlInclude(typeof(boolItem))]
-    //[System.Xml.Serialization.XmlInclude(typeof(ThreePItem))]
-    //[System.Xml.Serialization.XmlInclude(typeof(ListItem))]
-    [Serializable]
-    public abstract class SampleItem : IEquatable<Object>,  IComparable<SampleItem>, ICloneable 
+    public abstract class SampleItem : IEquatable<Object>, IComparable<SampleItem>
     {
         public const String INSURANCE_TAG = " <I>";
 
@@ -26,11 +21,10 @@ namespace FMSC.Sampling
 
         public abstract override String ToString();
 
-        public abstract Object Clone(); 
+        public abstract Object Clone();
 
         public override bool Equals(Object other)
         {
-
             if (this.Index == ((SampleItem)other).Index)
             {
                 return true;
@@ -47,7 +41,6 @@ namespace FMSC.Sampling
             {
                 return -1;
             }
-            
             else if (other.Index == this.Index)
             {
                 return 0;
@@ -57,13 +50,8 @@ namespace FMSC.Sampling
                 return 1;
             }
         }
-        
-
-        
-
     }
 
-    [Serializable]
     public class ThreePItem : SampleItem
     {
         [XmlAttribute]
@@ -103,13 +91,10 @@ namespace FMSC.Sampling
         {
             return String.Format("{0:d}:", this.KPI);
         }
-
     }
 
-    [Serializable]
-    public class boolItem : SampleItem 
+    public class boolItem : SampleItem
     {
-
         public boolItem()
         {
             base.Index = -1;
@@ -121,7 +106,6 @@ namespace FMSC.Sampling
             base.Index = index;
             IsInsuranceItem = false;
         }
-
 
         public boolItem(int index, bool isInsuranceItem, bool isSelected)
         {
@@ -135,9 +119,9 @@ namespace FMSC.Sampling
             return new boolItem(this.Index, this.IsInsuranceItem, this.IsSelected);
         }
 
-        public override int  getValue()
+        public override int getValue()
         {
-                return 1;
+            return 1;
         }
 
         public override string ToString()
@@ -151,17 +135,19 @@ namespace FMSC.Sampling
             {
                 insuranceIndicator = "";
             }
-            return "$ "+ insuranceIndicator;
+            return "$ " + insuranceIndicator;
         }
     }
 
-    [Serializable]
     public class ListItem : boolItem//, IEquatable<SampleItem>
     {
-        public ListItem() : base() { }
+        public ListItem() : base()
+        {
+        }
 
-        public ListItem(int index) : base(index) { }
-
+        public ListItem(int index) : base(index)
+        {
+        }
 
         public ListItem(int index, bool isInsuranceItem) : base(index)
         {

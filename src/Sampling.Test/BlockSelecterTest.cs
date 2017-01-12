@@ -1,10 +1,9 @@
 ﻿using FMSC.Sampling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+
 namespace Sampling.Test
 {
-    
-    
     /// <summary>
     ///This is a test class for BlockSelecterTest and is intended
     ///to contain all BlockSelecterTest Unit Tests
@@ -12,8 +11,6 @@ namespace Sampling.Test
     [TestClass()]
     public class BlockSelecterTest
     {
-
-
         private TestContext testContextInstance;
 
         /// <summary>
@@ -33,7 +30,8 @@ namespace Sampling.Test
         }
 
         #region Additional test attributes
-        // 
+
+        //
         //You can use the following additional attributes as you write your tests:
         //
         //Use ClassInitialize to run code before running the first test in the class
@@ -60,8 +58,8 @@ namespace Sampling.Test
         //{
         //}
         //
-        #endregion
 
+        #endregion Additional test attributes
 
         [TestMethod()]
         public void TestBlockSelecter()
@@ -106,19 +104,14 @@ namespace Sampling.Test
             decimal observediFreq = (totalISamples / (decimal)totalSamples);
             this.TestContext.WriteLine("Observed freq = {0}", observedFreq.ToString());
             this.TestContext.WriteLine("Observed iFreq = {0}", observediFreq.ToString());
-            
 
             decimal dFreq = Math.Abs((1 / (decimal)freqency) - observedFreq);
-            
 
             this.TestContext.WriteLine("delta freq  = {0}", dFreq.ToString());
-            
 
+            bool freqInTolarance = Math.Abs((1 / (decimal)freqency) - observedFreq) <= tolarance;
 
-            bool freqInTolarance = Math.Abs((1/(decimal)freqency) - observedFreq) <= tolarance;  
-            
             Assert.IsTrue(freqInTolarance);
-
 
             if (iFrequency > 0)
             {
@@ -127,7 +120,6 @@ namespace Sampling.Test
                 bool ifreqInTolarance = Math.Abs((1 / (decimal)iFrequency) - observediFreq) <= tolarance;
                 Assert.IsTrue(ifreqInTolarance);
             }
-
         }
     }
 }

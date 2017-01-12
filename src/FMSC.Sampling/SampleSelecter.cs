@@ -5,18 +5,20 @@ using System.Xml.Serialization;
 
 namespace FMSC.Sampling
 {
-    [Serializable]
     public abstract class SampleSelecter
     {
         #region fields
+
         private static MersenneTwister  rand = null;
 
         private int                     iTreeFrequency = -1;
         private int                     count = -1;
         private SystematicCounter       insuranceCounter = null;
-        #endregion
+
+        #endregion fields
 
         #region Ctor
+
         protected SampleSelecter()
         {
             if (rand == null)
@@ -27,17 +29,17 @@ namespace FMSC.Sampling
             this.Count = 0;
         }
 
-
         protected SampleSelecter( int iTreeFrequency ): this()
         {
             this.ITreeFrequency = iTreeFrequency;
         }
 
-        #endregion
+        #endregion Ctor
 
         #region Public properties
+
         /// <summary>
-        /// gets and sets ITreeFrequency. If value is not valid 
+        /// gets and sets ITreeFrequency. If value is not valid
         /// isSelectingITrees is set to false and ITreeFrequency to -1
         /// </summary>
         [XmlAttribute]
@@ -72,12 +74,10 @@ namespace FMSC.Sampling
                     throw new System.InvalidOperationException("can't reset insuranceCounter once it has been initialized");
                 }
             }
-
         }
 
-
         /// <summary>
-        /// gets IsSelectingItrees. value is true if 
+        /// gets IsSelectingItrees. value is true if
         /// ITreeFrequency is not -1.
         /// </summary>
         public bool IsSelectingITrees
@@ -93,16 +93,20 @@ namespace FMSC.Sampling
             get { return this.count; }
             //sets count if value is positive, otherwise it is set to -1
             set { this.count = (value >= 0) ? value : -1; }
-
         }
-        #endregion 
+
+        #endregion Public properties
+
+
 
         #region protected Properties
+
         public MersenneTwister Rand
         {
             get { return rand; }
         }
-        #endregion
+
+        #endregion protected Properties
 
         #region Methods
 
@@ -116,7 +120,7 @@ namespace FMSC.Sampling
 
         /// <summary>
         /// Checks if the SampleSelecter is ready, and will optionaly throw an exception if not
-        /// subclass should override. overridden method should call base's ready. 
+        /// subclass should override. overridden method should call base's ready.
         /// </summary>
         /// <param name="throwException">set to true if an exception should be thrown</param>
         /// <returns>true if SampleSelecter is ready, otherwise false</returns>
@@ -146,9 +150,8 @@ namespace FMSC.Sampling
             }
         }
 
-
         /// <summary>
-        /// Determins if the next n trees are a sample 
+        /// Determins if the next n trees are a sample
         /// </summary>
         /// <param name="num">number of trees to check</param>
         /// <returns>Array of bools indicating if each tree is a sample</returns>
@@ -178,6 +181,7 @@ namespace FMSC.Sampling
 
             return manyItems;
         }
-        #endregion
+
+        #endregion Methods
     }
 }

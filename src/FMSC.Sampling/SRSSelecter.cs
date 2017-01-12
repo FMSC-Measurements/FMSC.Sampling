@@ -5,11 +5,11 @@ using System.Xml.Serialization;
 
 namespace FMSC.Sampling
 {
-    [Serializable]
     public class SRSSelecter : SampleSelecter
     {
         //fields
         private int frequency = -1;
+
         //private Utility.SystematicCounter insuranceCounter = null;
 
         //constructers
@@ -25,7 +25,7 @@ namespace FMSC.Sampling
 
             if( base.IsSelectingITrees )
             {
-                InsuranceCounter = 
+                InsuranceCounter =
                     new SystematicCounter(Frequency * base.ITreeFrequency,
                         SystematicCounter.CounterType.ON_RANDOM, this.Rand);
             }
@@ -68,9 +68,8 @@ namespace FMSC.Sampling
 
         //}
 
-
         //methods
- 
+
         public override SampleItem NextItem()
         {
             this.Ready(true);
@@ -95,7 +94,6 @@ namespace FMSC.Sampling
             return item;
         }
 
-
         public override bool Ready(bool throwException)
         {
             if (this.frequency == -1 )
@@ -116,6 +114,3 @@ namespace FMSC.Sampling
         }
     }
 }
-        
-
-

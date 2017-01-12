@@ -2,20 +2,20 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9E48E27A-2B4A-4D9F-A3C0-6F308E0EC428}</ProjectGuid>
+    <ProjectGuid>{932C2341-A331-4B7C-8BC9-9D3491F1821B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FMSC.Sampling</RootNamespace>
-    <AssemblyName>FMSC.Sampling_WM6_CF20</AssemblyName>
+    <AssemblyName>FMSC.Sampling_CF20</AssemblyName>
     <ProjectTypeGuids>{4D628B5B-2FBC-4AA6-8C16-197242AEB884};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PlatformFamilyName>PocketPC</PlatformFamilyName>
-    <PlatformID>b2c48bd2-963d-4549-9169-1fa021dce484</PlatformID>
-    <OSVersion>5.2</OSVersion>
-    <DeployDirSuffix>FMSC.Sampling_WM6_CF20</DeployDirSuffix>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <NativePlatformName>Windows Mobile 6 Professional SDK</NativePlatformName>
+    <PlatformFamilyName>WindowsCE</PlatformFamilyName>
+    <PlatformID>E2BECB1F-8C8C-41ba-B736-9BE7D946A398</PlatformID>
+    <OSVersion>5.0</OSVersion>
+    <DeployDirSuffix>FMSC.Sampling_CE_CF20</DeployDirSuffix>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <NativePlatformName>Windows CE</NativePlatformName>
     <FormFactorID>
     </FormFactorID>
   </PropertyGroup>
@@ -24,7 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;$(PlatformFamilyName)</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NetCF NetCF_20</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -36,7 +36,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;$(PlatformFamilyName)</DefineConstants>
+    <DefineConstants>TRACE;NetCF NetCF_20</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -47,9 +47,6 @@
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -59,7 +56,7 @@
     <Compile Include="IFrequencyBasedSelecter.cs" />
     <Compile Include="ListSelecter.cs" />
     <Compile Include="MersenneTwister.cs" />
-    <Compile Include="Properties\AssemblyInfo_WM6_CF20.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleItem.cs" />
     <Compile Include="SampleSelecter.cs" />
     <Compile Include="SRSSelecter.cs" />

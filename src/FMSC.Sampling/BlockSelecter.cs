@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 
 namespace FMSC.Sampling
 {
-    public class BlockSelecter : SampleSelecter , IFrequencyBasedSelecter
+    public class BlockSelecter : SampleSelecter, IFrequencyBasedSelecter
     {
         //fields
 
@@ -23,15 +23,15 @@ namespace FMSC.Sampling
             }
             set
             {
-                this.frequency = ( value > 0) ? value : -1;
+                this.frequency = (value > 0) ? value : -1;
             }
         }
 
-
         [XmlElement("Block", typeof(BlockState))]
-        public BlockState Block { 
+        public BlockState Block
+        {
             get { return block; }
-            set 
+            set
             {
                 if (value == null) { throw new System.ArgumentNullException("Block can't be set to null"); }
                 if (block != null) { throw new System.InvalidOperationException("block can not be changed after it has been set"); }
@@ -39,22 +39,20 @@ namespace FMSC.Sampling
                 {
                     block = value;
                 }
-            } 
+            }
         }
-
 
         [XmlAttribute]
         public int BlockIndex { get; set; }
 
-
         #region Ctor
-            
+
         protected BlockSelecter() // protected constructer for serialization
             : base()
         {
-
         }
-        #endregion
+
+        #endregion Ctor
 
         public BlockSelecter(int frequency,
             int iTreeFrequency)
@@ -69,7 +67,7 @@ namespace FMSC.Sampling
                 //with the probability of 1 / (frequency * iTreeFrequency)
                 InsuranceCounter = new SystematicCounter(
                     (frequency * base.ITreeFrequency),
-                    SystematicCounter.CounterType.ON_RANDOM, base.Rand); 
+                    SystematicCounter.CounterType.ON_RANDOM, base.Rand);
                 //alternative method where iTree is selected every nth tally
                 //and frequency is n
                 //InsuranceCounter = new Utility.SystematicCounter( n , Utility.SystematicCounter.CounterType.ON_RANDOM)
@@ -86,11 +84,11 @@ namespace FMSC.Sampling
             this.Ready(true);
             boolItem nextItem;
 
-            if(this.block.BlockSize <= 0)
+            if (this.block.BlockSize <= 0)
             {
                 this.block.calcBlockSize(this);
             }
-            if (this.block != null && this.BlockIndex < this.block.BlockSize )
+            if (this.block != null && this.BlockIndex < this.block.BlockSize)
             {
                 //if a item exists at the current blockIndex
                 //create a clone and change its Index to the current count
@@ -106,7 +104,7 @@ namespace FMSC.Sampling
             }
             else if (this.block == null)
             {
-                //create and initalize the block 
+                //create and initalize the block
                 //and call NextItem
                 //Block = new Block(this);
                 //Block.initBlock();
@@ -121,8 +119,7 @@ namespace FMSC.Sampling
                 Block.initBlock(this);
                 return NextItem();
             }
-            throw new System.SystemException("code should be unreachable");
-
+            throw new Exception("code should be unreachable");
         }
 
         public override bool Ready(bool throwException)
