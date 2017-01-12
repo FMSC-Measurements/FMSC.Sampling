@@ -9,9 +9,9 @@ namespace FMSC.Sampling
     {
         //Fields
         private int kz = -1;
+
         private int maxKPI = -1;
         private int ajustedKZ = -1;
-        
 
         //Constructers
         public ThreePSelecter()
@@ -31,12 +31,10 @@ namespace FMSC.Sampling
             {
                 ajustedKZ = CalcAjustedKZ(kz, iTreeFrequency);
                 InsuranceCounter =
-                    new SystematicCounter(base.ITreeFrequency,
-                        SystematicCounter.CounterType.ON_RANDOM, this.Rand);
+                    new SystematicCounter(base.ITreeFrequency + 1,
+                        SystematicCounter.CounterType.ON_FIRST, this.Rand);
             }
         }
- 
-
 
         //methods
         private int CalcAjustedKZ(int kz, int iTreeFrequency)
@@ -44,7 +42,6 @@ namespace FMSC.Sampling
             double ajustedKZ;
             ajustedKZ = (double)kz / (1.0 + (1.0 / (double)iTreeFrequency));
             return (int)Math.Round(ajustedKZ);
-
         }
 
         public override SampleItem NextItem()
@@ -138,6 +135,5 @@ namespace FMSC.Sampling
                 return kz;
             }
         }
-
     }
 }
