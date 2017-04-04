@@ -32,7 +32,7 @@ namespace FMSC.Sampling
                 ajustedKZ = CalcAjustedKZ(kz, iTreeFrequency);
                 InsuranceCounter =
                     new SystematicCounter(base.ITreeFrequency + 1,
-                        SystematicCounter.CounterType.ON_FIRST, this.Rand);
+                        SystematicCounter.CounterType.ON_RANDOM, this.Rand);
             }
         }
 
