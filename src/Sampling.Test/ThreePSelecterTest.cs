@@ -1,35 +1,17 @@
-﻿using FMSC.Sampling;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FluentAssertions;
+using FMSC.Sampling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace Sampling.Test
 {
-    [TestClass()]
     public class ThreePSelecterTest
     {
-        private TestContext testContextInstance;
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
-
-        [TestMethod()]
+        [Fact]
         public void TestThreePSelecter()
         {
             decimal tolarance = .01m;
@@ -68,21 +50,20 @@ namespace Sampling.Test
             var sampleDiff = sampleCounter - numSamples;
             decimal sampleErr = (decimal)Math.Abs(sampleDiff) / (decimal)numSamples;
 
-            this.TestContext.WriteLine($"sampleDiff = {sampleDiff}");
-            this.TestContext.WriteLine($"sampleErr = {sampleErr}");
+            //this.TestContext.WriteLine($"sampleDiff = {sampleDiff}");
+            //this.TestContext.WriteLine($"sampleErr = {sampleErr}");
 
             if (iFrequency > 0)
             {
                 var iSampleDiff = iSampleCounter - numIsamples;
                 decimal iSampleErr = (decimal)Math.Abs(iSampleDiff) / (decimal)numIsamples;
 
-                this.TestContext.WriteLine($"iSampleDiff = {iSampleDiff}");
-                this.TestContext.WriteLine($"iSampleErr = {iSampleErr}");
+                //this.TestContext.WriteLine($"iSampleDiff = {iSampleDiff}");
+                //this.TestContext.WriteLine($"iSampleErr = {iSampleErr}");
 
-                Assert.IsTrue(iSampleErr <= tolarance);
+                iSampleErr.Should().BeLessOrEqualTo(tolarance);
             }
-
-            Assert.IsTrue(sampleErr <= tolarance);
+            sampleErr.Should().BeLessOrEqualTo(tolarance);
         }
     }
 }
