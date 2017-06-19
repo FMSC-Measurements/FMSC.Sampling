@@ -16,7 +16,7 @@ namespace Sampling.Test
         {
             decimal tolarance = .01m;
 
-            int iFrequency = 0;
+            int iFrequency = 5;
             int aveKpi = 20;
             int popSize = 1000000;
             int numSamples = 2000;
