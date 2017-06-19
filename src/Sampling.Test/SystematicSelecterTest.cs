@@ -8,6 +8,14 @@ namespace Sampling.Test
     public class SystematicSelecterTest
     {
         [Fact]
+        public void TestFreqIsOne()
+        {
+            var selecter = new SystematicSelecter(1, 1, true);
+
+            selecter.Invoking(x => x.NextItem()).ShouldNotThrow();
+        }
+
+        [Fact]
         public void TestSystmaticSelecter()
         {
             decimal tolarance = .01m;

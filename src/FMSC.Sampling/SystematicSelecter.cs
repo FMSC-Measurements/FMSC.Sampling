@@ -5,23 +5,27 @@ using System.Xml.Serialization;
 
 namespace FMSC.Sampling
 {
-    public class SystematicSelecter : SampleSelecter , IFrequencyBasedSelecter
+    public class SystematicSelecter : SampleSelecter, IFrequencyBasedSelecter
     {
         private int _hitIndex;
         private int _currentIndex;
         private int _frequency;
         private int _iHitIndex;
-        
 
-
-        public SystematicSelecter() 
+        public override bool IsSelectingITrees
         {
-            
+            get
+            {
+                return Frequency > 1 && base.IsSelectingITrees;
+            }
         }
 
-        public SystematicSelecter(int frequency): this(frequency, false)
+        public SystematicSelecter()
         {
+        }
 
+        public SystematicSelecter(int frequency) : this(frequency, false)
+        {
         }
 
         public SystematicSelecter(int frequency, bool randomStart) : this(frequency, -1, randomStart)
@@ -31,7 +35,7 @@ namespace FMSC.Sampling
         public SystematicSelecter(int frequency, int iFrequency, bool randomStart)
         {
             this.Frequency = frequency;
-            this.ITreeFrequency = iFrequency; 
+            this.ITreeFrequency = iFrequency;
             this._currentIndex = 0;
             if (randomStart)
             {
@@ -51,8 +55,6 @@ namespace FMSC.Sampling
                 base.InsuranceCounter = new SystematicCounter(ITreeFrequency, SystematicCounter.CounterType.ON_RANDOM, this.Rand);
             }
         }
-
-
 
         [XmlAttribute]
         public int Frequency
@@ -76,7 +78,7 @@ namespace FMSC.Sampling
         }
 
         [XmlAttribute]
-        public int HitIndex 
+        public int HitIndex
         {
             get { return _hitIndex; }
             set
@@ -97,7 +99,6 @@ namespace FMSC.Sampling
             }
         }
 
-
         private void IncrementIndex()
         {
             if (CurrentIndex == Frequency - 1)
@@ -112,7 +113,6 @@ namespace FMSC.Sampling
             {
                 CurrentIndex++;
             }
-            
         }
 
         public override SampleItem NextItem()
@@ -131,13 +131,12 @@ namespace FMSC.Sampling
 
             IncrementIndex();
             this.Count++;
-            return newItem; 
+            return newItem;
         }
 
         public override bool Ready(bool throwException)
         {
             return true;
         }
-
     }
 }

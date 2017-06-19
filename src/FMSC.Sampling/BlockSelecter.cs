@@ -27,6 +27,14 @@ namespace FMSC.Sampling
             }
         }
 
+        public override bool IsSelectingITrees
+        {
+            get
+            {
+                return Frequency > 1 && base.IsSelectingITrees;
+            }
+        }
+
         [XmlElement("Block", typeof(BlockState))]
         public BlockState Block
         {

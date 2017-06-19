@@ -9,11 +9,11 @@ namespace FMSC.Sampling
     {
         #region fields
 
-        private static MersenneTwister  rand = null;
+        private static MersenneTwister rand = null;
 
-        private int                     iTreeFrequency = -1;
-        private int                     count = -1;
-        private SystematicCounter       insuranceCounter = null;
+        private int iTreeFrequency = -1;
+        private int count = -1;
+        private SystematicCounter insuranceCounter = null;
 
         #endregion fields
 
@@ -29,7 +29,7 @@ namespace FMSC.Sampling
             this.Count = 0;
         }
 
-        protected SampleSelecter( int iTreeFrequency ): this()
+        protected SampleSelecter(int iTreeFrequency) : this()
         {
             this.ITreeFrequency = iTreeFrequency;
         }
@@ -43,8 +43,9 @@ namespace FMSC.Sampling
         /// isSelectingITrees is set to false and ITreeFrequency to -1
         /// </summary>
         [XmlAttribute]
-        public int ITreeFrequency {
-            get {return this.iTreeFrequency;}
+        public int ITreeFrequency
+        {
+            get { return this.iTreeFrequency; }
             //sets iTreeFrequency if value is positive and non zero,
             //otherwise it is set to -1 and set isSelectingITrees to false
             set
@@ -80,7 +81,8 @@ namespace FMSC.Sampling
         /// gets IsSelectingItrees. value is true if
         /// ITreeFrequency is not -1.
         /// </summary>
-        public bool IsSelectingITrees
+        [XmlIgnore]
+        public virtual bool IsSelectingITrees
         {
             get
             {
@@ -89,15 +91,14 @@ namespace FMSC.Sampling
         }
 
         [XmlAttribute]
-        public int Count {
+        public int Count
+        {
             get { return this.count; }
             //sets count if value is positive, otherwise it is set to -1
             set { this.count = (value >= 0) ? value : -1; }
         }
 
         #endregion Public properties
-
-
 
         #region protected Properties
 
