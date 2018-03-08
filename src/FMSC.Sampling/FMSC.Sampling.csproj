@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DefineConstants></DefineConstants>
+  </PropertyGroup>
+    
+  <PropertyGroup Condition="'$(TargetFramework)' == ''">
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="$(DefineConstants.Contains(SYSTEM_DATA_SQLITE))">
+  </PropertyGroup>  
+
+  <ItemGroup Condition="'$(TargetFramework)' == ''">
+    
+  </ItemGroup>  
+
+  <ItemGroup>
+    <Compile Remove="ListSelecter.cs" />
+    <Compile Remove="SelecterTypeInterfaces.cs" />
+  </ItemGroup>
+  
+</Project> 
