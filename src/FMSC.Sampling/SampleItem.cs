@@ -139,55 +139,55 @@ namespace FMSC.Sampling
         }
     }
 
-    public class ListItem : boolItem//, IEquatable<SampleItem>
-    {
-        public ListItem() : base()
-        {
-        }
+    //public class ListItem : boolItem//, IEquatable<SampleItem>
+    //{
+    //    public ListItem() : base()
+    //    {
+    //    }
 
-        public ListItem(int index) : base(index)
-        {
-        }
+    //    public ListItem(int index) : base(index)
+    //    {
+    //    }
 
-        public ListItem(int index, bool isInsuranceItem) : base(index)
-        {
-            base.IsInsuranceItem = isInsuranceItem;
-        }
+    //    public ListItem(int index, bool isInsuranceItem) : base(index)
+    //    {
+    //        base.IsInsuranceItem = isInsuranceItem;
+    //    }
 
-        public override bool Equals(Object other)
-        {
-            if (this.Index == ((ListItem)other).Index)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+    //    public override bool Equals(Object other)
+    //    {
+    //        if (this.Index == ((ListItem)other).Index)
+    //        {
+    //            return true;
+    //        }
+    //        else
+    //        {
+    //            return false;
+    //        }
+    //    }
 
-        public override object Clone()
-        {
-            return new ListItem(this.Index, this.IsInsuranceItem);
-        }
+    //    public override object Clone()
+    //    {
+    //        return new ListItem(this.Index, this.IsInsuranceItem);
+    //    }
 
-        public override int getValue()
-        {
-            return base.Index;
-        }
+    //    public override int getValue()
+    //    {
+    //        return base.Index;
+    //    }
 
-        public override string ToString()
-        {
-            String insuranceIndicator;
-            if (base.IsInsuranceItem)
-            {
-                insuranceIndicator = INSURANCE_TAG;
-            }
-            else
-            {
-                insuranceIndicator = "";
-            }
-            return (base.Index + 1).ToString() + insuranceIndicator;
-        }
-    }
+    //    public override string ToString()
+    //    {
+    //        String insuranceIndicator;
+    //        if (base.IsInsuranceItem)
+    //        {
+    //            insuranceIndicator = INSURANCE_TAG;
+    //        }
+    //        else
+    //        {
+    //            insuranceIndicator = "";
+    //        }
+    //        return (base.Index + 1).ToString() + insuranceIndicator;
+    //    }
+    //}
 }
