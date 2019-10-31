@@ -14,37 +14,32 @@ namespace Sampling.Test
         [Fact]
         public void TestThreePSelecter()
         {
-            decimal tolarance = .01m;
+            decimal tolarance = .04m;
 
             int iFrequency = 5;
             int aveKpi = 20;
-            int popSize = 1000000;
-            int numSamples = 2000;
-            int numIsamples = (iFrequency > 0) ? numSamples / iFrequency : 0;
+            int freq = 500;
+            int popSize = 1_000_000;
+            int numSamples = popSize / freq;
+            //int numIsamples = (iFrequency > 0) ? numSamples / iFrequency : 0; // same as other implementation but less consistant with how i test other methods
+            int numIsamples = (iFrequency > 0) ? popSize / (iFrequency * freq) : 0;
 
             int popVol = aveKpi * popSize;
             int kz = popVol / numSamples;
-            int maxKPI = kz * 2;
 
-            var selecter = new ThreePSelecter(kz, maxKPI, iFrequency);
+            var selecter = new ThreePSelecter(kz, iFrequency);
 
             int sampleCounter = 0;
             int iSampleCounter = 0;
 
             for (int i = 0; i < popSize; i++)
             {
-                var result = selecter.NextItem() as ThreePItem;
-                if (result != null && aveKpi > result.KPI)
-                {
-                    if (selecter.IsSelectingITrees && selecter.InsuranceCounter.Next())
-                    {
-                        iSampleCounter++;
-                    }
-                    else
-                    {
-                        sampleCounter++;
-                    }
-                }
+                var result = selecter.Sample(aveKpi);
+                
+                if(result == 'M')
+                { sampleCounter++; }
+                else if (result == 'I')
+                { iSampleCounter++; }
             }
 
             var sampleDiff = sampleCounter - numSamples;
@@ -52,6 +47,11 @@ namespace Sampling.Test
 
             //this.TestContext.WriteLine($"sampleDiff = {sampleDiff}");
             //this.TestContext.WriteLine($"sampleErr = {sampleErr}");
+
+            var seenFreq = popSize / sampleCounter;
+            //seenFreq.Should().BeInRange(freq - 1, freq + 1);
+
+            sampleErr.Should().BeLessOrEqualTo(tolarance);
 
             if (iFrequency > 0)
             {
@@ -63,7 +63,7 @@ namespace Sampling.Test
 
                 iSampleErr.Should().BeLessOrEqualTo(tolarance);
             }
-            sampleErr.Should().BeLessOrEqualTo(tolarance);
+            
         }
     }
 }

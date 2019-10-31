@@ -12,7 +12,7 @@ namespace Sampling.Test
         {
             var selecter = new SystematicSelecter(1, 1, true);
 
-            selecter.Invoking(x => x.NextItem()).ShouldNotThrow();
+            selecter.Invoking(x => x.Sample()).ShouldNotThrow();
         }
 
         [Fact]
@@ -30,17 +30,17 @@ namespace Sampling.Test
 
             for (int i = 0; i < numSamples; i++)
             {
-                SampleItem item = selecter.NextItem();
+                var result = selecter.Sample();
 
-                if (item != null && item.IsInsuranceItem)
-                {
-                    results[i] = 2;
-                    totalISamples++;
-                }
-                else if (item != null && item.IsSelected)
+                if (result == 'M')
                 {
                     results[i] = 1;
                     totalSamples++;
+                }
+                else if (result == 'I')
+                {
+                    results[i] = 2;
+                    totalISamples++;
                 }
                 else
                 {

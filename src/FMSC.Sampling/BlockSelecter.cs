@@ -1,152 +1,117 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Serialization;
+using System.Linq;
 
 namespace FMSC.Sampling
 {
-    public class BlockSelecter : SampleSelecter, IFrequencyBasedSelecter
+    public class BlockSelecter : FrequencySelecter
     {
+        private const char SAMPLE_VALUE = 'x';
+        private const char NONSAMPLE_VALUE = '-';
+        private const int SAMPLES_PER_SUBBLOCK = 2; // this should never change, it is tightly tied to the sampling logic
+        private const int numSubBlocks = 5; // this value could concevabley change but we wont change it.
+
         //fields
+        private bool[] _block = null;
 
-        private int frequency = -1;
-        private BlockState block = null;
-
-        //Properties
-
-        [XmlAttribute]
-        public int Frequency
+        public string BlockState
         {
             get
             {
-                return this.frequency;
-            }
-            set
-            {
-                this.frequency = (value > 0) ? value : -1;
+                var block = _block;
+                if (block == null) return "";
+                return new String(block.Select(x => (x) ? SAMPLE_VALUE : NONSAMPLE_VALUE).ToArray());
             }
         }
-
-        public override bool IsSelectingITrees
-        {
-            get
-            {
-                return Frequency > 1 && base.IsSelectingITrees;
-            }
-        }
-
-        [XmlElement("Block", typeof(BlockState))]
-        public BlockState Block
-        {
-            get { return block; }
-            set
-            {
-                if (value == null) { throw new System.ArgumentNullException("Block can't be set to null"); }
-                if (block != null) { throw new System.InvalidOperationException("block can not be changed after it has been set"); }
-                if (block == null && value != null)
-                {
-                    block = value;
-                }
-            }
-        }
-
-        [XmlAttribute]
-        public int BlockIndex { get; set; }
-
-        #region Ctor
-
-        protected BlockSelecter() // protected constructer for serialization
-            : base()
-        {
-        }
-
-        #endregion Ctor
 
         public BlockSelecter(int frequency,
             int iTreeFrequency)
-            : base(iTreeFrequency)
+            : base(frequency, iTreeFrequency)
         {
-            this.Frequency = frequency;
-
-            if (base.IsSelectingITrees)
-            {
-                //create a systematicCounter for insurance trees
-                //that will select an insurance tree at random
-                //with the probability of 1 / (frequency * iTreeFrequency)
-                InsuranceCounter = new SystematicCounter(
-                    (frequency * base.ITreeFrequency),
-                    SystematicCounter.CounterType.ON_RANDOM, base.Rand);
-                //alternative method where iTree is selected every nth tally
-                //and frequency is n
-                //InsuranceCounter = new Utility.SystematicCounter( n , Utility.SystematicCounter.CounterType.ON_RANDOM)
-            }
-
-            this.Block = new BlockState();
-            Block.initBlock(this);
-            BlockIndex = 0;
         }
 
-        //methods
-        public override SampleItem NextItem()
+        public BlockSelecter(int frequency, int iTreeFrequency, string blockState, int counter, int insuranceIndex, int insuranceCounter)
+            : base(frequency, iTreeFrequency, counter, insuranceIndex, insuranceCounter)
         {
-            this.Ready(true);
-            boolItem nextItem;
+            Frequency = frequency;
 
-            if (this.block.BlockSize <= 0)
-            {
-                this.block.calcBlockSize(this);
-            }
-            if (this.block != null && this.BlockIndex < this.block.BlockSize)
-            {
-                //if a item exists at the current blockIndex
-                //create a clone and change its Index to the current count
-                nextItem = Block[BlockIndex];
-                if (nextItem != null)
-                {
-                    nextItem = (boolItem)nextItem.Clone();
-                    nextItem.Index = Count;
-                }
-                BlockIndex++;
-                base.Count++;
-                return nextItem;
-            }
-            else if (this.block == null)
-            {
-                //create and initalize the block
-                //and call NextItem
-                //Block = new Block(this);
-                //Block.initBlock();
-                //return NextItem();
-                //TODO enable this for debuging
-                throw new System.InvalidOperationException("no instance of block");
-            }
-            else if (this.BlockIndex == this.block.BlockSize)
-            {
-                //reinitialize block when the end has been reached
-                BlockIndex = 0;
-                Block.initBlock(this);
-                return NextItem();
-            }
-            throw new Exception("code should be unreachable");
+            if (blockState == null) throw new ArgumentNullException("blockState");
+            if (blockState.Length != CalcBlockSize(frequency)) throw new ArgumentException("blockstate length invalid");
+            _block = blockState.Select(x => char.ToLower(x) == SAMPLE_VALUE).ToArray();
         }
 
-        public override bool Ready(bool throwException)
+        public override char Sample()
         {
-            if (Frequency == -1)
+            lock (this)
             {
-                if (throwException)
+                var frequency = Frequency;
+                var block = _block ?? (_block = GenerateBlock(frequency, Rand));
+
+                var count = Count;
+                var index = count % block.Length;
+
+                var isInsuranceSample = false;
+                var isSample = block[index];
+                if (isSample && IsSelectingITrees) // if tree IS  a sample and we are selecting insureance samples
                 {
-                    throw new System.InvalidOperationException("block sample not ready");
+                    isInsuranceSample = InsuranceSampler.Next();
                 }
-                else
+
+                // update count and generate new block if needed
+                count = count + 1;
+                if (count == block.Length)
                 {
-                    return false;
+                    _block = GenerateBlock(frequency, Rand);
                 }
+                Count = count;
+
+                if (isInsuranceSample) { return 'I'; }
+                else if (isSample) { return 'M'; }
+                else { return 'C'; }
             }
-            else
+        }
+
+        public static int CalcBlockSize(int frequency)
+        {
+            return frequency * SAMPLES_PER_SUBBLOCK * numSubBlocks;
+        }
+
+        public static bool[] GenerateBlock(int frequency, System.Random rand = null)
+        {
+            if (rand == null) { rand = MersenneTwister.Instance; }
+            if (frequency <= 0) { throw new ArgumentOutOfRangeException(nameof(frequency)); }
+
+            var blockSize = CalcBlockSize(frequency);
+
+            var block = new bool[blockSize];
+
+            // select subblock samples
+            // we will select one sample for each subblock
+            for (int i = 0; i < numSubBlocks; i++)
             {
-                return true;
+                //calculate the range of the current subblock
+                var subBlockStart = i * frequency * SAMPLES_PER_SUBBLOCK;
+                var subBlockEnd = (i + 1) * frequency * SAMPLES_PER_SUBBLOCK;
+
+                var sampleIndex = rand.Next(subBlockStart, subBlockEnd);
+                block[sampleIndex] = true;
             }
+
+            // select samples over the whole block
+            // for x = the number of sub blocks we will select a sample from the whole block
+            for (int i = 0; i < numSubBlocks; i++)
+            {
+                int sampleIndex = -1;
+                //keep sampleing until we find a index without a sample
+                //that you dont already have
+                do
+                {
+                    sampleIndex = rand.Next(0, blockSize);
+                } while (block[sampleIndex] == true);
+
+                block[sampleIndex] = true;
+            }
+
+            return block;
         }
     }
 }

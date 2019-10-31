@@ -1,188 +1,93 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Serialization;
 
 namespace FMSC.Sampling
 {
-    public abstract class SampleSelecter
+    public abstract class SampleSelecter : ISampleSelector
     {
         #region fields
 
-        private static MersenneTwister rand = null;
+        protected MersenneTwister _rand = null;
 
-        private int iTreeFrequency = -1;
-        private int count = -1;
-        private SystematicCounter insuranceCounter = null;
+        private int _iTreeFrequency;
+        private int _count;
 
         #endregion fields
 
         #region Ctor
 
-        protected SampleSelecter()
+        protected SampleSelecter(int iTreeFrequency)
         {
-            if (rand == null)
+            ITreeFrequency = iTreeFrequency;
+            if (iTreeFrequency > 1)
             {
-                uint seed = (uint)Math.Abs(DateTime.Now.Ticks);//TODO test edge cases on seed value
-                rand = new MersenneTwister(seed);
+                InsuranceSampler = new SystematicCounter(iTreeFrequency, SystematicCounter.CounterType.ON_RANDOM, Rand);
             }
-            this.Count = 0;
         }
 
-        protected SampleSelecter(int iTreeFrequency) : this()
+        protected SampleSelecter(int iTreeFrequency, int count, int insuranceIndex, int insuranceCounter)
         {
-            this.ITreeFrequency = iTreeFrequency;
+            Count = count;
+            ITreeFrequency = iTreeFrequency;
+            if (iTreeFrequency > 1)
+            {
+                InsuranceSampler = new SystematicCounter(iTreeFrequency, insuranceIndex, insuranceCounter);
+            }
         }
 
         #endregion Ctor
 
-        #region Public properties
+        #region properties
+
+        public string StratumCode { get; set; }
+
+        public string SampleGroupCode { get; set; }
+
+        public int InsuranceCounter => InsuranceSampler?.Counter ?? 0;
+
+        public int InsuranceIndex => InsuranceSampler?.HitIndex ?? 0;
 
         /// <summary>
         /// gets and sets ITreeFrequency. If value is not valid
         /// isSelectingITrees is set to false and ITreeFrequency to -1
         /// </summary>
-        [XmlAttribute]
         public int ITreeFrequency
         {
-            get { return this.iTreeFrequency; }
-            //sets iTreeFrequency if value is positive and non zero,
-            //otherwise it is set to -1 and set isSelectingITrees to false
-            set
+            get { return _iTreeFrequency; }
+            protected set
             {
-                this.iTreeFrequency = value;
+                _iTreeFrequency = (value >= 0) ? value : throw new ArgumentOutOfRangeException();
             }
         }
 
-        [XmlElementAttribute(ElementName = "insuranceCounter",
-            IsNullable = false, Type = typeof(SystematicCounter))]
-        public SystematicCounter InsuranceCounter
-        {
-            get { return insuranceCounter; }
-            set
-            {
-                if (insuranceCounter == null && value != null)
-                {
-                    value.Rand = this.Rand;
-                    insuranceCounter = value;
-                }
-                else if (value == null)
-                {
-                    throw new System.ArgumentNullException("can't set insuranceCounter to null");
-                }
-                else if (insuranceCounter != null)
-                {
-                    throw new System.InvalidOperationException("can't reset insuranceCounter once it has been initialized");
-                }
-            }
-        }
+        protected SystematicCounter InsuranceSampler { get; set; }
 
         /// <summary>
         /// gets IsSelectingItrees. value is true if
         /// ITreeFrequency is not -1.
         /// </summary>
-        [XmlIgnore]
-        public virtual bool IsSelectingITrees
+        public bool IsSelectingITrees
         {
             get
             {
-                return ITreeFrequency > 0;
+                return ITreeFrequency > 1;
             }
         }
 
-        [XmlAttribute]
-        public int Count
+        public virtual int Count
         {
-            get { return this.count; }
-            //sets count if value is positive, otherwise it is set to -1
-            set { this.count = (value >= 0) ? value : -1; }
-        }
-
-        #endregion Public properties
-
-        #region protected Properties
-
-        public MersenneTwister Rand
-        {
-            get { return rand; }
-        }
-
-        #endregion protected Properties
-
-        #region Methods
-
-        /// <summary>
-        /// Determins if the next tree is a sample and if IsSelectingITrees is true
-        /// it determins if the next tree is a insurance tree. subclass should call
-        /// subclass's overriden Ready()
-        /// </summary>
-        /// <returns>SampleItem object containing informating on the next tree</returns>
-        public abstract SampleItem NextItem();
-
-        /// <summary>
-        /// Checks if the SampleSelecter is ready, and will optionaly throw an exception if not
-        /// subclass should override. overridden method should call base's ready.
-        /// </summary>
-        /// <param name="throwException">set to true if an exception should be thrown</param>
-        /// <returns>true if SampleSelecter is ready, otherwise false</returns>
-        public abstract bool Ready(bool throwException);
-
-        /// <summary>
-        /// Determins if the next tree is a sample
-        /// </summary>
-        /// <returns>true if the next tree is a sample</returns>
-        public bool Next()
-        {
-            SampleItem item = this.NextItem();
-            if (item != null)
+            get => _count;
+            protected set
             {
-                if (item.IsInsuranceItem)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            else
-            {
-                return false;
+                if (value < 0) throw new ArgumentOutOfRangeException(nameof(Count));
+                _count = value;
             }
         }
 
-        /// <summary>
-        /// Determins if the next n trees are a sample
-        /// </summary>
-        /// <param name="num">number of trees to check</param>
-        /// <returns>Array of bools indicating if each tree is a sample</returns>
-        public bool[] GetMany(int num)
+        public Random Rand
         {
-            List<bool> many = new List<bool>(num);
-            for (int i = 0; i < num; i++)
-            {
-                many.Add(this.Next());
-            }
-
-            return many.ToArray();
+            get { return _rand ?? MersenneTwister.Instance; }
         }
 
-        public List<SampleItem> GetManyItems(int num)
-        {
-            List<SampleItem> manyItems = new List<SampleItem>(num);
-            SampleItem nextItem = null;
-            for (int i = 0; i < num; i++)
-            {
-                nextItem = this.NextItem();
-                if (nextItem != null)
-                {
-                    manyItems.Add(nextItem);
-                }
-            }
-
-            return manyItems;
-        }
-
-        #endregion Methods
+        #endregion properties
     }
 }

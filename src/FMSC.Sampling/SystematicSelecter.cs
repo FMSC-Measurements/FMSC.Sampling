@@ -1,142 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Serialization;
-
-namespace FMSC.Sampling
+﻿namespace FMSC.Sampling
 {
-    public class SystematicSelecter : SampleSelecter, IFrequencyBasedSelecter
+    public class SystematicSelecter : FrequencySelecter, IFrequencyBasedSelecter
     {
-        private int _hitIndex;
-        private int _currentIndex;
-        private int _frequency;
-        private int _iHitIndex;
 
-        public override bool IsSelectingITrees
-        {
-            get
-            {
-                return Frequency > 1 && base.IsSelectingITrees;
-            }
-        }
-
-        public SystematicSelecter()
-        {
-        }
-
-        public SystematicSelecter(int frequency) : this(frequency, false)
-        {
-        }
-
-        public SystematicSelecter(int frequency, bool randomStart) : this(frequency, -1, randomStart)
-        {
-        }
+        protected SystematicCounter SystematicCounter { get; }
 
         public SystematicSelecter(int frequency, int iFrequency, bool randomStart)
+            : base(frequency, iFrequency)
         {
-            this.Frequency = frequency;
-            this.ITreeFrequency = iFrequency;
-            this._currentIndex = 0;
-            if (randomStart)
-            {
-                this.HitIndex = Rand.Next(Frequency - 1);
-            }
-            else
-            {
-                this.HitIndex = 0;
-            }
-            if (base.IsSelectingITrees && this.Frequency != 1)
-            {
-                this._iHitIndex = Rand.Next(Frequency - 1);
-                if (this._iHitIndex == this.HitIndex)
-                {
-                    this._iHitIndex = (this._iHitIndex + 1) % Frequency;
-                }
-                base.InsuranceCounter = new SystematicCounter(ITreeFrequency, SystematicCounter.CounterType.ON_RANDOM, this.Rand);
-            }
+            SystematicCounter = new SystematicCounter(frequency, (randomStart) ? SystematicCounter.CounterType.ON_RANDOM : SystematicCounter.CounterType.ON_LAST, Rand);
         }
 
-        [XmlAttribute]
-        public int Frequency
+        public SystematicSelecter(int frequency, int iFrequency, int counter, int insuranceIndex, int insuranceCounter, int hitIndex)
+            : base(frequency, iFrequency, counter, insuranceIndex, insuranceCounter)
         {
-            get { return _frequency; }
-            set
-            {
-                if (value < 0) { throw new ArgumentOutOfRangeException("Frequency"); }
-                _frequency = value;
-            }
+            SystematicCounter = new SystematicCounter(frequency, hitIndex, counter);
         }
 
-        [XmlAttribute]
-        public int CurrentIndex
+
+        public override int Count
         {
-            get { return _currentIndex; }
-            set
-            {
-                _currentIndex = value;
-            }
+            get { return SystematicCounter.Counter; }
         }
 
-        [XmlAttribute]
         public int HitIndex
         {
-            get { return _hitIndex; }
-            set
-            {
-                if (value < 0 || value > Frequency - 1) { throw new ArgumentOutOfRangeException("HitIndex"); }
-                _hitIndex = value;
-            }
+            get { return SystematicCounter.HitIndex; }
         }
 
-        [XmlAttribute]
-        public int IHitIndex
+        public override char Sample()
         {
-            get { return _iHitIndex; }
-            set
-            {
-                if (value < 0 || value > Frequency - 1) { throw new ArgumentOutOfRangeException("HitIndex"); }
-                _iHitIndex = value;
-            }
-        }
+            var isSample = SystematicCounter.Next();
 
-        private void IncrementIndex()
-        {
-            if (CurrentIndex == Frequency - 1)
+            if (isSample)
             {
-                CurrentIndex = 0;
-                if (IsSelectingITrees)
+                if (IsSelectingITrees && InsuranceSampler.Next())
                 {
-                    this.InsuranceCounter.Next();
+                    return 'I';
                 }
+                else { return 'M'; }
             }
             else
-            {
-                CurrentIndex++;
-            }
-        }
-
-        public override SampleItem NextItem()
-        {
-            boolItem newItem = null;
-            if (CurrentIndex == _hitIndex)
-            {
-                newItem = new boolItem();
-                newItem.IsSelected = true;
-            }
-            else if (base.IsSelectingITrees && this.InsuranceCounter.Check() && CurrentIndex == _iHitIndex)
-            {
-                newItem = new boolItem();
-                newItem.IsInsuranceItem = true;
-            }
-
-            IncrementIndex();
-            this.Count++;
-            return newItem;
-        }
-
-        public override bool Ready(bool throwException)
-        {
-            return true;
+            { return 'C'; }
         }
     }
 }

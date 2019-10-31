@@ -15,6 +15,19 @@ namespace FMSC.Sampling
 {
     public class MersenneTwister : System.Random
     {
+        static MersenneTwister _instance;
+        public static MersenneTwister Instance
+        {
+            get
+            {
+                return _instance ?? (_instance = new MersenneTwister((uint)Math.Abs(DateTime.Now.Ticks)));
+            }
+            set
+            {
+                _instance = value ?? throw new ArgumentNullException();
+            }
+        }
+
         /* Period parameters */
         private const int N = 624;
         private const int M = 397;
