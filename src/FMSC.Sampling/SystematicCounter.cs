@@ -13,19 +13,19 @@ namespace FMSC.Sampling
         public int Frequency
         {
             get => _frequency;
-            protected set => _frequency = (value >= 0) ? value : throw new ArgumentOutOfRangeException("Frequency", value, "");
+            protected set => _frequency = (value >= 0) ? value : throw new ArgumentOutOfRangeException("Frequency", $"Frequency value:{value} was out of range");
         }
 
         public int Counter
         {
             get => _counter;
-            protected set => _counter = (value >= 0) ? value : throw new ArgumentOutOfRangeException("Counter", value, "");
+            protected set => _counter = (value >= 0) ? value : throw new ArgumentOutOfRangeException("Counter", $"Counter value:{value} was out of range");
         }
 
         public int HitIndex
         {
             get => _hitIndex;
-            protected set => _hitIndex = (value >= 0) ? value : throw new ArgumentOutOfRangeException("HitIndex", value, "");
+            protected set => _hitIndex = (value >= 0) ? value : throw new ArgumentOutOfRangeException("HitIndex", $"HitIndex value:{value} was out of range");
         }
 
         //public SystematicCounter(int frequency, CounterType counterMethod)
