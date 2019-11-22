@@ -17,8 +17,8 @@ SET msbuild="%parent%tools\msbuild.cmd"
 
 IF NOT DEFINED build_config SET build_config="Release"
 
-call %msbuild% /t:Restore %parent%Backpack.SqlBuilder\Backpack.SqlBuilder.csproj
-call %msbuild% /p:Configuration=%build_config% %parent%Backpack.SqlBuilder\Backpack.SqlBuilder.csproj
+call %msbuild% /t:Restore %parent%FMSC.Sampling\FMSC.Sampling.csproj
+call %msbuild% /p:Configuration=%build_config% %parent%FMSC.Sampling\FMSC.Sampling.csproj
 
 
 ::if invoked from windows explorer, pause

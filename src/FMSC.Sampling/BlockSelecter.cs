@@ -39,7 +39,7 @@ namespace FMSC.Sampling
             _block = blockState.Select(x => char.ToLower(x) == SAMPLE_VALUE).ToArray();
         }
 
-        public override char Sample()
+        public override SampleResult Sample()
         {
             lock (this)
             {
@@ -51,7 +51,7 @@ namespace FMSC.Sampling
 
                 var isInsuranceSample = false;
                 var isSample = block[index];
-                if (isSample && IsSelectingITrees) // if tree IS  a sample and we are selecting insureance samples
+                if (!isSample && IsSelectingITrees) // if tree IS  a sample and we are selecting insureance samples
                 {
                     isInsuranceSample = InsuranceSampler.Next();
                 }
@@ -64,9 +64,9 @@ namespace FMSC.Sampling
                 }
                 Count = count;
 
-                if (isInsuranceSample) { return 'I'; }
-                else if (isSample) { return 'M'; }
-                else { return 'C'; }
+                if (isInsuranceSample) { return SampleResult.I; }
+                else if (isSample) { return SampleResult.M; }
+                else { return SampleResult.C; }
             }
         }
 

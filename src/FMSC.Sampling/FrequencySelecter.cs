@@ -22,26 +22,26 @@ namespace FMSC.Sampling
             : base(iFrequency)
         {
             Frequency = frequency;
+
+            if (iFrequency > 1 && frequency > 1)
+            {
+                var ajustedIFrequency = (frequency - 1) * iFrequency;
+                InsuranceSampler = new SystematicCounter(ajustedIFrequency, SystematicCounter.CounterType.ON_RANDOM, Rand);
+            }
         }
 
         public FrequencySelecter(int frequency, int iFrequency, int counter, int insuranceIndex, int insuranceCounter)
-            : base(iFrequency, counter, insuranceIndex, insuranceCounter)
+            : base(iFrequency, counter)
         {
             Frequency = frequency;
+
+            if (iFrequency > 1 && frequency > 1)
+            {
+                var ajustedIFrequency = (frequency - 1) * iFrequency;
+                InsuranceSampler = new SystematicCounter(ajustedIFrequency, insuranceIndex, insuranceCounter);
+            }
         }
 
-
-        public abstract char Sample();
-
-        /// <summary>
-        /// Determins if the next tree is a sample
-        /// </summary>
-        /// <returns>true if the next tree is a sample</returns>
-        [Obsolete]
-        public bool Next()
-        {
-            var sampleResult = Sample();
-            return sampleResult == 'M';
-        }
+        public abstract SampleResult Sample();
     }
 }

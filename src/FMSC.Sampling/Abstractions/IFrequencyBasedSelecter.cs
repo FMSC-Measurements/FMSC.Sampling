@@ -5,6 +5,6 @@
         //Properties
         int Frequency { get; }
 
-        char Sample();
+        SampleResult Sample();
     }
 }

@@ -34,8 +34,6 @@ namespace FMSC.Sampling
 
         public SystematicCounter(int frequency, CounterType counterMethod, Random rand)
         {
-
-
             if (counterMethod == CounterType.ON_RANDOM)
             {
                 HitIndex = rand.Next(frequency - 1);

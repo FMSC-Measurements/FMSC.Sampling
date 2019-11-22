@@ -28,7 +28,7 @@
             get { return SystematicCounter.HitIndex; }
         }
 
-        public override char Sample()
+        public override SampleResult Sample()
         {
             var isSample = SystematicCounter.Next();
 
@@ -36,12 +36,12 @@
             {
                 if (IsSelectingITrees && InsuranceSampler.Next())
                 {
-                    return 'I';
+                    return SampleResult.I;
                 }
-                else { return 'M'; }
+                else { return SampleResult.M; }
             }
             else
-            { return 'C'; }
+            { return SampleResult.C; }
         }
     }
 }

@@ -2,8 +2,8 @@
 {
     public interface IThreePSelector
     {
-        char Sample(int kpi);
+        SampleResult Sample(int kpi);
 
-        char Sample(int kpi, out int rand);
+        SampleResult Sample(int kpi, out int rand);
     }
 }

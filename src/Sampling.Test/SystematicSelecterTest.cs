@@ -32,12 +32,12 @@ namespace Sampling.Test
             {
                 var result = selecter.Sample();
 
-                if (result == 'M')
+                if (result == SampleResult.M)
                 {
                     results[i] = 1;
                     totalSamples++;
                 }
-                else if (result == 'I')
+                else if (result == SampleResult.I)
                 {
                     results[i] = 2;
                     totalISamples++;
