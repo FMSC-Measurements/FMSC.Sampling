@@ -9,8 +9,12 @@ namespace Sampling.Test
     public class BlockSelecterTest
     {
         const int BLOCK_SAMPLING_MARGIN_OF_ERROR = 5; // because a block has 5 samples that can be distributed anywhere, 
-            // a block could be front heavy 5 samples causing us to get 5 more samples that we expected in a hypethetical 
-            // worst case where we finish sampleing 6 (5 + 1) samples into a new block 
+                                                      // a block could be front heavy 5 samples causing us to get 5 more samples that we expected in a hypethetical 
+                                                      // worst case where we finish sampleing 6 (5 + 1) samples into a new block 
+
+
+
+        
 
         [Theory]
         [InlineData(15, 0, 10_000)]
