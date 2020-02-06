@@ -20,16 +20,23 @@ namespace Sampling.Test
             var counter = new SystematicCounter(frequency, SystematicCounter.CounterType.ON_RANDOM, rand);
 
             var numRuns = 100;
-            var numSamples = numRuns * frequency;
-            var results = new bool[numSamples];
+            var expectedSamples = numRuns / frequency;
+            var results = new bool[numRuns];
 
-            for (int i = 0; i < numSamples; i++)
+
+            var seenSamples = 0;
+            for (int i = 0; i < numRuns; i++)
             {
-                results[i] = counter.Next();
+                var result = counter.Next();
+                if(result )
+                {
+                    seenSamples++;
+                }
+                results[i] = result;
             }
 
-            var totalSamples = results.Where(x => x == true).Count();
-            totalSamples.Should().Be(numRuns);
+            //var seenSamples = results.Where(x => x == true).Count();
+            seenSamples.Should().Be(expectedSamples);
 
 
         }
