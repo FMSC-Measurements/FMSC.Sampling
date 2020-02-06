@@ -67,9 +67,9 @@ namespace Sampling.Test
             {
                 var result = selecter.Sample(aveKpi);
                 
-                if(result == 'M')
+                if(result == SampleResult.M)
                 { sampleCounter++; }
-                else if (result == 'I')
+                else if (result == SampleResult.I)
                 { iSampleCounter++; }
             }
 

@@ -28,9 +28,9 @@ namespace Sampling.Test
             for(int i = 0; i < numRuns; i++)
             {
                 var result = selector.Sample();
-                if(result == 'M')
+                if(result == SampleResult.M)
                 { numSamples++; }
-                else if (result == 'I')
+                else if (result == SampleResult.I)
                 { numISamples++; }
             }
 

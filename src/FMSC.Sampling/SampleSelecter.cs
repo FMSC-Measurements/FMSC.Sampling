@@ -18,20 +18,13 @@ namespace FMSC.Sampling
         protected SampleSelecter(int iTreeFrequency)
         {
             ITreeFrequency = iTreeFrequency;
-            if (iTreeFrequency > 1)
-            {
-                InsuranceSampler = new SystematicCounter(iTreeFrequency, SystematicCounter.CounterType.ON_RANDOM, Rand);
-            }
         }
 
-        protected SampleSelecter(int iTreeFrequency, int count, int insuranceIndex, int insuranceCounter)
+        protected SampleSelecter(int iTreeFrequency, int count)
         {
             Count = count;
             ITreeFrequency = iTreeFrequency;
-            if (iTreeFrequency > 1)
-            {
-                InsuranceSampler = new SystematicCounter(iTreeFrequency, insuranceIndex, insuranceCounter);
-            }
+
         }
 
         #endregion Ctor
@@ -83,7 +76,7 @@ namespace FMSC.Sampling
             }
         }
 
-        public Random Rand
+        protected Random Rand
         {
             get { return _rand ?? MersenneTwister.Instance; }
         }

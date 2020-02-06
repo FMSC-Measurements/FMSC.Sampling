@@ -49,12 +49,12 @@ namespace Sampling.Test
             {
                 var result = selecter.Sample();
 
-                if (result == 'M')
+                if (result == SampleResult.M)
                 {
                     results[i] = 1;
                     totalSamples++;
                 }
-                else if (result == 'I')
+                else if (result == SampleResult.I)
                 {
                     results[i] = 2;
                     totalISamples++;
@@ -79,8 +79,6 @@ namespace Sampling.Test
             // if we are sampleing insurance trees then some regualr samples will get converted
             // into insurance samples, so we need to ajust expected samples to account for insuance trees
             var expectedITrees = (iFrequency > 0) ? numSamples / (iFrequency * freqency) : 0;
-            expectedSamples = expectedSamples - expectedITrees;
-
 
             Math.Abs(expectedSamples - totalSamples)
                 .Should().BeLessOrEqualTo(blockMarginOfError, $"expected samples:{expectedSamples} actual samples {totalSamples}"); // difference between actual samples and expected should be less than 1, allowing for rounding errors

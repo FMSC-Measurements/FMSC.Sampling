@@ -56,7 +56,7 @@ namespace FMSC.Sampling
             {
                 ajustedKZ = CalcAjustedKZ(kz, iTreeFrequency);
                 InsuranceSampler =
-                    new SystematicCounter(base.ITreeFrequency + 1, // ajust i frequency because we were getting slightly too many i samples
+                    new SystematicCounter(iTreeFrequency + 1, // ajust i frequency because we were getting slightly too many i samples
                         SystematicCounter.CounterType.ON_RANDOM, Rand);
             }
         }
@@ -64,17 +64,17 @@ namespace FMSC.Sampling
         public ThreePSelecter(
             int kz,
             int iTreeFrequency,
+            int counter,
             int insuranceIndex, int insuranceCounter)
-            : base(iTreeFrequency, 0, insuranceIndex, insuranceCounter)
+            : base(iTreeFrequency, counter)
         {
             KZ = kz;
 
             if (IsSelectingITrees)
             {
-                var iFreq = ITreeFrequency;
-                ajustedKZ = CalcAjustedKZ(kz, iFreq);
+                ajustedKZ = CalcAjustedKZ(kz, iTreeFrequency);
                 InsuranceSampler =
-                    new SystematicCounter(iFreq + 1, // ajust i frequency because we were getting slightly too many i samples
+                    new SystematicCounter(iTreeFrequency + 1, // ajust i frequency because we were getting slightly too many i samples
                         insuranceIndex, insuranceCounter);
             }
         }
@@ -87,12 +87,12 @@ namespace FMSC.Sampling
             return (int)Math.Round(ajustedKZ);
         }
 
-        public char Sample(int kpi)
+        public SampleResult Sample(int kpi)
         {
-            return Sample(kpi, out var randomNumber);
+            return Sample(kpi, out _);
         }
 
-        public char Sample(int kpi, out int randomNumber)
+        public SampleResult Sample(int kpi, out int randomNumber)
         {
             randomNumber = Rand.Next(WorkingKZ);
 
@@ -101,12 +101,12 @@ namespace FMSC.Sampling
             if (isSample)
             {
                 if (IsSelectingITrees && InsuranceSampler.Next())
-                { return 'I'; }
+                { return SampleResult.I; }
                 else
-                { return 'M'; }
+                { return SampleResult.M; }
             }
             else
-            { return 'C'; }
+            { return SampleResult.C; }
         }
     }
 }
