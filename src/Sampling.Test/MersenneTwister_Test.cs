@@ -24,8 +24,6 @@ namespace Sampling.Test
         [Fact]
         public void MersenneTwister_fusk()
         {
-            var rand = new Random();
-
             for(int i = 0; i < 1000; i++)
             {
                 var mt = new MersenneTwister((uint)Math.Abs(DateTime.Now.Ticks));
@@ -39,6 +37,19 @@ namespace Sampling.Test
             for(int i = 0; i < 10000; i++)
             {
                 random.Invoking(x => x.NextDouble()).ShouldNotThrow();
+            }
+        }
+
+        [Fact]
+        public void Next_max()
+        {
+            var mt = new MersenneTwister((uint)Math.Abs(DateTime.Now.Ticks));
+
+            for (int i = 0; i < 1000; i++)
+            {
+                var result = mt.Next(2);
+                result.Should().BeLessThan(2);
+                result.Should().BeGreaterOrEqualTo(0);
             }
         }
     }
