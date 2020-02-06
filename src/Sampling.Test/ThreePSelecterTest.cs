@@ -11,6 +11,37 @@ namespace Sampling.Test
 {
     public class ThreePSelecterTest
     {
+        private double BinomialProbability(int trials, int successes,
+                           double probabilityOfSuccess)
+        {
+            long Factorial(long x)
+            {
+                long result = 1;
+                while (x != 1)
+                {
+                    result *= x;
+                    x -= 1;
+                }
+                return result;
+            }
+
+            long Combination(long a, long b)
+            {
+                if (a <= 1)
+                    return 1;
+
+                return Factorial(a) / (Factorial(b) * Factorial(a - b));
+            }
+
+            double probOfFailures = 1 - probabilityOfSuccess;
+
+            double c = Combination(trials, successes);
+            double px = Math.Pow(probabilityOfSuccess, successes);
+            double qnx = Math.Pow(probOfFailures, trials - successes);
+
+            return c * px * qnx;
+        }
+
         [Fact]
         public void TestThreePSelecter()
         {
@@ -42,16 +73,12 @@ namespace Sampling.Test
                 { iSampleCounter++; }
             }
 
-            var sampleDiff = sampleCounter - numSamples;
-            decimal sampleErr = (decimal)Math.Abs(sampleDiff) / (decimal)numSamples;
+            var likelihood_twoSided = 2 * BinomialProbability(popSize, numIsamples, 1 / (double)freq);
+            likelihood_twoSided.Should().BeLessThan(0.04);
+            
 
-            //this.TestContext.WriteLine($"sampleDiff = {sampleDiff}");
-            //this.TestContext.WriteLine($"sampleErr = {sampleErr}");
 
-            var seenFreq = popSize / sampleCounter;
-            //seenFreq.Should().BeInRange(freq - 1, freq + 1);
-
-            sampleErr.Should().BeLessOrEqualTo(tolarance);
+            //sampleErr.Should().BeLessOrEqualTo(tolarance);
 
             if (iFrequency > 0)
             {
