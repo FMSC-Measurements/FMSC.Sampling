@@ -12,6 +12,40 @@ namespace Sampling.Test
     public class SystematicCounter_Tests
     {
         [Theory]
+        [InlineData(0, false)]
+        [InlineData(1, true)]
+        [InlineData(2, true)]
+        public void SystematicCounter_ctor_frequency(int frequency, bool inRange)
+        {
+            var counterMethod = SystematicCounter.CounterType.ON_RANDOM;
+
+            var rand = new MersenneTwister((uint)Math.Abs(DateTime.Now.Ticks));
+
+            Action a = () => new SystematicCounter(frequency, counterMethod, rand);
+
+            if (inRange)
+            {
+                a.ShouldNotThrow();
+            }
+            else
+            {
+                a.ShouldThrow<ArgumentOutOfRangeException>();
+            }
+
+            Action a2 = () => new SystematicCounter(frequency, counterMethod, rand);
+
+            if (inRange)
+            {
+                a2.ShouldNotThrow();
+            }
+            else
+            {
+                a2.ShouldThrow<ArgumentOutOfRangeException>();
+            }
+        }
+
+
+        [Theory]
         [InlineData(10)]
         [InlineData(2)]
         public void Sample_OnRandom(int frequency)

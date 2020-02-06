@@ -32,10 +32,12 @@ namespace FMSC.Sampling
         //    : this(frequency, counterMethod, null)
         //{ }
 
-        public SystematicCounter(int frequency, CounterType counterMethod, Random rand)
+        public SystematicCounter(int frequency, CounterType counterMethod, Random rand = null)
         {
+            if(frequency <= 0) { throw new ArgumentOutOfRangeException(nameof(frequency)); }
             if (counterMethod == CounterType.ON_RANDOM)
             {
+                if(rand == null) { throw new ArgumentNullException(nameof(rand)); }
                 HitIndex = rand.Next(frequency);
             }
             else if (counterMethod == CounterType.ON_LAST)
@@ -48,6 +50,10 @@ namespace FMSC.Sampling
 
         public SystematicCounter(int frequency, int hitIndex, int count)
         {
+            if (frequency <= 0) { throw new ArgumentOutOfRangeException(nameof(frequency)); }
+            if (hitIndex < 0 || hitIndex >= frequency) { throw new ArgumentOutOfRangeException(nameof(hitIndex)); }
+            if (count < 0) { throw new ArgumentOutOfRangeException(nameof(count)); }
+
             HitIndex = hitIndex;
             Frequency = frequency;
             Counter = count;
