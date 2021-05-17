@@ -58,13 +58,7 @@ namespace FMSC.Sampling
         /// gets IsSelectingItrees. value is true if
         /// ITreeFrequency is not -1.
         /// </summary>
-        public bool IsSelectingITrees
-        {
-            get
-            {
-                return ITreeFrequency > 1;
-            }
-        }
+        public virtual bool IsSelectingITrees => ITreeFrequency > 1;
 
         public virtual int Count
         {

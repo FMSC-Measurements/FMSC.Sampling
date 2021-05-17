@@ -18,6 +18,9 @@ namespace FMSC.Sampling
             }
         }
 
+        // if frequency is 1 then all samples should be measure and we don't get any insurance samples
+        public override bool IsSelectingITrees => base.IsSelectingITrees && Frequency > 1;
+
         public FrequencySelecter(int frequency, int iFrequency)
             : base(iFrequency)
         {
