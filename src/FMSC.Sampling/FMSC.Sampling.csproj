@@ -1,24 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net35;netstandard2.0</TargetFrameworks>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Version>1.1.3.1</Version>
+    <TargetFrameworks>net40;netstandard2.0;net35-cf</TargetFrameworks>
+    <!--<TargetFrameworks>net40;netstandard2.0;</TargetFrameworks>-->
+    <!--<GenerateAssemblyInfo>false</GenerateAssemblyInfo>-->
+    <Version>2.0.2.0</Version>
     <IsTestProject>false</IsTestProject>
   </PropertyGroup>
 
-  <PropertyGroup Label="Package Config" Condition="('$(IsTestProject)' == '' OR '$(IsTestProject)' == 'false') AND '$(Configuration)' == 'Release'">
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-  </PropertyGroup>
-
-  <Target Name="CopyPackage" AfterTargets="Pack">
-    <Copy SourceFiles="$(OutputPath)$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(SolutionDir)\PackageOutput" />
-  </Target>
-
   <ItemGroup>
     <Compile Remove="ListSelecter.cs" />
-    <Compile Remove="SelecterTypeInterfaces.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net35-cf'">
+    <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>CompactFramework</TargetFrameworkProfile>
+    <DefineConstants>$(DefineConstants);NET35_CF;WindowsCE</DefineConstants>
+    <DisableImplicitFrameworkReferences>True</DisableImplicitFrameworkReferences>
+    <NoStdLib>True</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <FileAlignment>512</FileAlignment>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <PlatformID>E2BECB1F-8C8C-41ba-B736-9BE7D946A398</PlatformID>
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net35-cf'">
+    <Reference Include="mscorlib, Version=3.5.0.0, Culture=neutral, PublicKeyToken=969db8053d3322ac" />
+    <Reference Include="System, Version=3.5.0.0, Culture=neutral, PublicKeyToken=969db8053d3322ac" />
+    <Reference Include="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=969db8053d3322ac" />
+    <Reference Include="System.Data, Version=3.5.0.0, Culture=neutral, PublicKeyToken=969db8053d3322ac" />
+    <Reference Include="System.Runtime.Serialization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=969db8053d3322ac" />
+    <Reference Include="System.Xml, Version=3.5.0.0, Culture=neutral, PublicKeyToken=969db8053d3322ac" />
+    <Reference Include="System.Xml.Linq, Version=3.5.0.0, Culture=neutral, PublicKeyToken=969db8053d3322ac" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>

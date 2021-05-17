@@ -1,18 +1,43 @@
 ﻿using FluentAssertions;
 using FMSC.Sampling;
 using System;
+using System.Linq;
 using Xunit;
 
 namespace Sampling.Test
 {
     public class SystematicSelecterTest
     {
-        [Fact]
-        public void TestFreqIsOne()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        public void TestFreqIsOne(int iFreq)
         {
-            var selecter = new SystematicSelecter(1, 1, true);
+            var freq = 1;
+            var selecter = new SystematicSelecter(freq, iFreq, true);
+            selecter.Invoking(x => x.Sample()).ShouldNotThrow();
 
-            selecter.Invoking(x => x.NextItem()).ShouldNotThrow();
+            foreach (var i in Enumerable.Range(0, freq * 10))
+            {
+                selecter.Sample().Should().Be(SampleResult.M);
+            }
+        }
+
+        [Theory]
+        [InlineData(1, 0, false)]
+        [InlineData(2, 0, false)]
+        [InlineData(1, 0, true)]
+        [InlineData(2, 0, true)]
+        public void SystematicSelecter(int freq, int iFreq, bool randStart)
+        {
+            var selecter = new SystematicSelecter(freq, iFreq, randStart);
+            selecter.Invoking(x => x.Sample()).ShouldNotThrow();
+
+            foreach (var i in Enumerable.Range(0, freq * 10))
+            {
+                selecter.Invoking(x => x.Sample()).ShouldNotThrow();
+            }
         }
 
         [Fact]
@@ -30,17 +55,17 @@ namespace Sampling.Test
 
             for (int i = 0; i < numSamples; i++)
             {
-                SampleItem item = selecter.NextItem();
+                var result = selecter.Sample();
 
-                if (item != null && item.IsInsuranceItem)
-                {
-                    results[i] = 2;
-                    totalISamples++;
-                }
-                else if (item != null && item.IsSelected)
+                if (result == SampleResult.M)
                 {
                     results[i] = 1;
                     totalSamples++;
+                }
+                else if (result == SampleResult.I)
+                {
+                    results[i] = 2;
+                    totalISamples++;
                 }
                 else
                 {
