@@ -8,18 +8,23 @@ namespace FMSC.Sampling
         private const char SAMPLE_VALUE = 'x';
         private const char NONSAMPLE_VALUE = '-';
         private const int SAMPLES_PER_SUBBLOCK = 2; // this should never change, it is tightly tied to the sampling logic
-        private const int numSubBlocks = 5; // this value could concevabley change but we wont change it.
+        private const int NUM_SUBBLOCKS = 5; // this value could concevabley change but we wont change it.
 
-        //fields
-        private bool[] _block = null;
+        protected bool[] Block { get; set; }
 
         public string BlockState
         {
             get
             {
-                var block = _block;
+                var block = Block;
                 if (block == null) return "";
                 return new String(block.Select(x => (x) ? SAMPLE_VALUE : NONSAMPLE_VALUE).ToArray());
+            }
+            protected set
+            {
+                if (value != null)
+                { Block = value.Select(x => char.ToLower(x) == SAMPLE_VALUE).ToArray(); }
+                else { Block = null; }
             }
         }
 
@@ -27,6 +32,7 @@ namespace FMSC.Sampling
             int iTreeFrequency)
             : base(frequency, iTreeFrequency)
         {
+            Block = GenerateBlock(frequency, Rand);
         }
 
         public BlockSelecter(int frequency, int iTreeFrequency, string blockState, int counter, int insuranceIndex, int insuranceCounter)
@@ -34,9 +40,15 @@ namespace FMSC.Sampling
         {
             Frequency = frequency;
 
-            if (blockState == null) throw new ArgumentNullException("blockState");
-            if (blockState.Length != CalcBlockSize(frequency)) throw new ArgumentException("blockstate length invalid");
-            _block = blockState.Select(x => char.ToLower(x) == SAMPLE_VALUE).ToArray();
+            if (blockState != null && blockState != "")
+            {
+                if (blockState.Length != CalcBlockSize(frequency)) throw new ArgumentException("blockstate length invalid");
+                BlockState = blockState;
+            }
+            else
+            {
+                Block = GenerateBlock(frequency, Rand);
+            }
         }
 
         public override SampleResult Sample()
@@ -44,7 +56,7 @@ namespace FMSC.Sampling
             lock (this)
             {
                 var frequency = Frequency;
-                var block = _block ?? (_block = GenerateBlock(frequency, Rand));
+                var block = Block;
 
                 var count = Count;
                 var index = count % block.Length;
@@ -60,7 +72,7 @@ namespace FMSC.Sampling
                 count = count + 1;
                 if (count == block.Length)
                 {
-                    _block = GenerateBlock(frequency, Rand);
+                    Block = GenerateBlock(frequency, Rand);
                 }
                 Count = count;
 
@@ -72,7 +84,7 @@ namespace FMSC.Sampling
 
         public static int CalcBlockSize(int frequency)
         {
-            return frequency * SAMPLES_PER_SUBBLOCK * numSubBlocks;
+            return frequency * SAMPLES_PER_SUBBLOCK * NUM_SUBBLOCKS;
         }
 
         public static bool[] GenerateBlock(int frequency, System.Random rand = null)
@@ -86,7 +98,7 @@ namespace FMSC.Sampling
 
             // select subblock samples
             // we will select one sample for each subblock
-            for (int i = 0; i < numSubBlocks; i++)
+            for (int i = 0; i < NUM_SUBBLOCKS; i++)
             {
                 //calculate the range of the current subblock
                 var subBlockStart = i * frequency * SAMPLES_PER_SUBBLOCK;
@@ -98,7 +110,7 @@ namespace FMSC.Sampling
 
             // select samples over the whole block
             // for x = the number of sub blocks we will select a sample from the whole block
-            for (int i = 0; i < numSubBlocks; i++)
+            for (int i = 0; i < NUM_SUBBLOCKS; i++)
             {
                 int sampleIndex = -1;
                 //keep sampleing until we find a index without a sample

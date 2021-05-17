@@ -14,32 +14,108 @@ namespace Sampling.Test
 
 
 
-        
+
 
         [Theory]
-        [InlineData(15, 0, 10_000)]
-        [InlineData(15, 2, 10_000)]
-        public void TestBlockSelecter(int freqency, int iFrequency, int numSamples)
+        //[InlineData(0, 0)]
+        [InlineData(1, 0)]
+        [InlineData(2, 0)]
+        [InlineData(3, 0)]
+        [InlineData(1, 1)]
+        [InlineData(2, 1)]
+        [InlineData(3, 1)]
+        [InlineData(1, 2)]
+        [InlineData(2, 2)]
+        [InlineData(3, 2)]
+        [InlineData(1, 3)]
+        [InlineData(2, 3)]
+        [InlineData(3, 3)]
+        public void TestBlockSelecter(int freqency, int iFrequency)
         {
             BlockSelecter selecter = new BlockSelecter(freqency, iFrequency);
 
-            ValidateBlockSelecter(selecter, freqency, iFrequency, numSamples);
+            var sResult = selecter.Sample();
+            sResult.Should().NotBeNull();
+            selecter.BlockState.Should().NotBeEmpty();
         }
 
         [Theory]
-        [InlineData(15, 0, 10_000)]
-        [InlineData(15, 2, 10_000)]
-        public void TestBlockSelector_2(int frequency, int iFrequency, int numSamples)
+        //[InlineData(0, 0)]
+        [InlineData(1, 0)]
+        [InlineData(2, 0)]
+        [InlineData(3, 0)]
+        [InlineData(1, 1)]
+        [InlineData(2, 1)]
+        [InlineData(3, 1)]
+        [InlineData(1, 2)]
+        [InlineData(2, 2)]
+        [InlineData(3, 2)]
+        [InlineData(1, 3)]
+        [InlineData(2, 3)]
+        [InlineData(3, 3)]
+        public void BlockSelecter_Rehidrate(int freqency, int iFrequency)
+        {
+            BlockSelecter selecter = new BlockSelecter(freqency, iFrequency);
+
+            var selecterAgian = new BlockSelecter(selecter.Frequency,
+                selecter.ITreeFrequency,
+                selecter.BlockState,
+                selecter.Count,
+                selecter.InsuranceIndex,
+                selecter.InsuranceCounter);
+        }
+
+        [Theory]
+        //[InlineData(0, 0)]
+        [InlineData(1, 0)]
+        [InlineData(2, 0)]
+        [InlineData(3, 0)]
+        [InlineData(1, 1)]
+        [InlineData(2, 1)]
+        [InlineData(3, 1)]
+        [InlineData(1, 2)]
+        [InlineData(2, 2)]
+        [InlineData(3, 2)]
+        [InlineData(1, 3)]
+        [InlineData(2, 3)]
+        [InlineData(3, 3)]
+        public void BlockSelecter_Rehidrate_AfterSample(int freqency, int iFrequency)
+        {
+            BlockSelecter selecter = new BlockSelecter(freqency, iFrequency);
+
+            selecter.Sample();
+
+            var selecterAgian = new BlockSelecter(selecter.Frequency,
+                selecter.ITreeFrequency,
+                selecter.BlockState,
+                selecter.Count,
+                selecter.InsuranceIndex,
+                selecter.InsuranceCounter);
+        }
+
+        [Theory]
+        [InlineData(15, 0)]
+        [InlineData(15, 2)]
+        public void TestBlockSelector_2(int frequency, int iFrequency)
         {
             var block = new String(BlockSelecter.GenerateBlock(frequency).Select(x => x ? 'x' : '-').ToArray());
 
             BlockSelecter selecter = new BlockSelecter(frequency, iFrequency, block, 3, 0, 0);
 
-            ValidateBlockSelecter(selecter, frequency, iFrequency, numSamples);
+            
         }
 
+        [Theory]
+        [InlineData(15, 0, 10_000)]
+        [InlineData(15, 2, 10_000)]
+        public void BlockSelector_Sample_Test(int freq, int iFreq, int numSamples)
+        {
+            BlockSelecter selecter = new BlockSelecter(freq, iFreq);
 
-        protected void ValidateBlockSelecter(BlockSelecter selecter, int freqency, int iFrequency, int numSamples, int blockMarginOfError = BLOCK_SAMPLING_MARGIN_OF_ERROR)
+            ValidateBlockSelecter(selecter, freq, iFreq, numSamples);
+        }
+
+        protected void ValidateBlockSelecter(BlockSelecter selecter, int freq, int iFreq, int numSamples, int blockMarginOfError = BLOCK_SAMPLING_MARGIN_OF_ERROR)
         {
             int[] results = new int[numSamples];
             int totalSamples = 0;
@@ -65,7 +141,7 @@ namespace Sampling.Test
                 }
             }
 
-            selecter.ITreeFrequency.ShouldBeEquivalentTo(iFrequency);
+            selecter.ITreeFrequency.ShouldBeEquivalentTo(iFreq);
 
             //this.TestContext.WriteLine(" numsamples  = {0}", numSamples.ToString());
             //this.TestContext.WriteLine("total samples  = {0}", totalSamples.ToString());
@@ -74,19 +150,19 @@ namespace Sampling.Test
             decimal observedFreq = (totalSamples / (decimal)numSamples);
             decimal observediFreq = (totalISamples / (decimal)numSamples);
 
-            var expectedSamples = numSamples / freqency;
+            var expectedSamples = numSamples / freq;
 
             // if we are sampleing insurance trees then some regualr samples will get converted
             // into insurance samples, so we need to ajust expected samples to account for insuance trees
-            var expectedITrees = (iFrequency > 0) ? numSamples / (iFrequency * freqency) : 0;
+            var expectedITrees = (iFreq > 0) ? numSamples / (iFreq * freq) : 0;
 
             Math.Abs(expectedSamples - totalSamples)
                 .Should().BeLessOrEqualTo(blockMarginOfError, $"expected samples:{expectedSamples} actual samples {totalSamples}"); // difference between actual samples and expected should be less than 1, allowing for rounding errors
 
 
-            if (iFrequency > 0)
+            if (iFreq > 0)
             {
-                var iSampleMarginOfError = Math.Max(blockMarginOfError / iFrequency, 1);
+                var iSampleMarginOfError = Math.Max(blockMarginOfError / iFreq, 1);
 
                 Math.Abs(expectedITrees - totalISamples)
                     .Should().BeLessOrEqualTo(iSampleMarginOfError, $"expected i samples:{expectedITrees} actual i samples:{totalISamples}");
@@ -97,7 +173,7 @@ namespace Sampling.Test
         [Fact]
         // run the sampler so that number of samples lines up with 
         // block size so there is no margin for error
-        public void TestBlockSelecter_exact()
+        public void BlockSelecter_Sample_exact_test()
         {
             int freqency = 15;
             int numSamples = freqency * 2 * 5 * 100;
@@ -111,7 +187,7 @@ namespace Sampling.Test
         [Fact]
         // run the sampler so that number of samples lines up with 
         // block size so there is no margin for error
-        public void TestBlockSelecter_exact_with_iTrees()
+        public void BlockSelecter_Sample_exact_with_iTrees()
         {
             int freqency = 15;
             int numSamples = freqency * 2 * 5 * 100;
